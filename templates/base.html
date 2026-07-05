@@ -19,6 +19,10 @@
     <meta property="twitter:description" content="{% block twitter_description %}Premium construction materials and end-to-end building construction services.{% endblock %}"/>
     
     <title>{% block title %}{{ company_info.company_name|default:"Viruksha Enterprises" }}{% endblock %}</title>
+    <!-- Favicon -->
+    {% if company_info.logo %}
+        <link rel="icon" type="image/png" href="{{ company_info.logo.url }}"/>
+    {% endif %}
     <!-- Material Symbols -->
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
     <!-- Google Fonts -->
