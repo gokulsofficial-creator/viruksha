@@ -1,0 +1,21 @@
+services:
+  - type: web
+    name: viruksha-portal
+    runtime: python
+    buildCommand: ./build.sh
+    startCommand: gunicorn viruksha_project.wsgi:application
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.10.12
+      - key: DJANGO_SETTINGS_MODULE
+        value: viruksha_project.settings
+      - key: DEBUG
+        value: "False"
+      - key: SECRET_KEY
+        generateValue: true
+      - key: RENDER_DATA_DIR
+        value: /data
+    disk:
+      name: viruksha-db-disk
+      mountPath: /data
+      sizeGB: 1
