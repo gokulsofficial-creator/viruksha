@@ -24,11 +24,14 @@ def home(request):
 def services_view(request):
     company_info = CompanyInfo.objects.first()
     service_categories = ServiceCategory.objects.prefetch_related('services').all()
-    materials = Material.objects.all()
+    # Showcase active, featured products or fallback to active products
+    showcase_products = Product.objects.filter(is_active=True, is_featured=True)[:8]
+    if not showcase_products.exists():
+        showcase_products = Product.objects.filter(is_active=True)[:8]
     context = {
         'company_info': company_info,
         'service_categories': service_categories,
-        'materials': materials,
+        'showcase_products': showcase_products,
     }
     return render(request, 'core/services.html', context)
 
