@@ -11,7 +11,7 @@
     <meta property="og:type" content="website"/>
     <meta property="og:title" content="{% block og_title %}{{ company_info.company_name|default:'Viruksha Enterprises' }}{% endblock %}"/>
     <meta property="og:description" content="{% block og_description %}Premium construction materials and end-to-end building construction services.{% endblock %}"/>
-    <meta property="og:image" content="{% block og_image %}{% static 'images/logo.png' %}{% endblock %}"/>
+    <meta property="og:image" content="{% block og_image %}{% if company_info.logo %}{{ company_info.logo.url }}{% else %}https://lh3.googleusercontent.com/aida/AP1WRLvsM6ew2QaCRdCMjUHw09wV0E8oS_vTNWEtPh6OWrWwHRzCzATzum-OS4bHe6rSyMYBt4B55Von61yaNiT4TScLVIRdnC_r4bWDcqCfbrIYJPzYHsNqcQu-PhzXGhU0SZWZiSEsh1NsiK90fz54_aEMqPoAnutxPO9OuEJlJDTbELj9InqCzh9kiMJJC6d-UtrKtWZv3x-uj9GeUW2TwcR4-b8AW4iazKQs4o95M2JaLay43SeLRdg44Tg{% endif %}{% endblock %}"/>
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image"/>

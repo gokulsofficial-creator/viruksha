@@ -3,6 +3,8 @@
 
 {% block title %}{{ product.name }} | {{ company_info.company_name|default:"Viruksha Enterprises" }}{% endblock %}
 
+{% block meta_description %}{{ product.name }} from {{ company_info.company_name|default:"Viruksha Enterprises" }}. {{ product.short_description }}{% endblock %}
+
 {% block content %}
 <main class="max-w-container-max mx-auto px-gutter py-xl">
     <!-- Breadcrumbs -->
