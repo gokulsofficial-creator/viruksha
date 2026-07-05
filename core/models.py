@@ -72,6 +72,7 @@ class Material(models.Model):
     slug = models.SlugField(unique=True)
     category = models.CharField(max_length=100, help_text="e.g., Pipe Fittings, Fasteners")
     description = models.TextField()
+    linked_product = models.ForeignKey('Product', on_delete=models.SET_NULL, null=True, blank=True, related_name='linked_materials', help_text="Link this material highlight to a specific product detail page (optional)")
     image = models.ImageField(upload_to='materials/', blank=True)
     is_featured = models.BooleanField(default=False)
     sort_order = models.IntegerField(default=0)

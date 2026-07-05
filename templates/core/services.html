@@ -36,7 +36,7 @@
         {% if materials %}
             {% for material in materials %}
                 <div class="bg-surface-white rounded-lg shadow-sm hover:-translate-y-1 hover:shadow-lg transition-all duration-300 overflow-hidden group border border-border-subtle flex flex-col">
-                    <div class="h-48 relative overflow-hidden bg-surface-container-high">
+                    <a href="{% if material.linked_product %}{% url 'core:product_detail' material.linked_product.slug %}{% else %}/products/?q={{ material.name|urlencode }}{% endif %}" class="block h-48 relative overflow-hidden bg-surface-container-high">
                         <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
                              src="{% if material.image %}{{ material.image.url }}{% else %}https://images.unsplash.com/photo-1590069261209-f8e9b8642343?auto=format&fit=crop&w=600&q=80{% endif %}" 
                              alt="{{ material.name }}"
@@ -44,9 +44,13 @@
                         <div class="absolute top-4 left-4 bg-secondary-container/95 text-on-secondary-container backdrop-blur-sm px-3 py-1 rounded-full border border-primary/10">
                             <span class="font-label-md text-label-md">{{ material.category }}</span>
                         </div>
-                    </div>
+                    </a>
                     <div class="p-md flex-grow flex flex-col">
-                        <h3 class="font-headline-sm text-headline-sm text-primary mb-2 line-clamp-1">{{ material.name }}</h3>
+                        <h3 class="font-headline-sm text-headline-sm text-primary mb-2 line-clamp-1">
+                            <a href="{% if material.linked_product %}{% url 'core:product_detail' material.linked_product.slug %}{% else %}/products/?q={{ material.name|urlencode }}{% endif %}" class="hover:text-secondary transition-colors">
+                                {{ material.name }}
+                            </a>
+                        </h3>
                         <p class="font-body-sm text-body-sm text-on-surface-variant mb-6 flex-grow line-clamp-3">{{ material.description }}</p>
                         <a href="/enquiry/?product={{ material.name|urlencode }}&type=material" class="text-primary font-label-md text-label-md hover:text-[#d4942a] transition-colors self-start border-b border-transparent hover:border-[#d4942a] flex items-center gap-1 mt-auto">
                             Enquire Now <span class="material-symbols-outlined text-[16px]">arrow_forward</span>

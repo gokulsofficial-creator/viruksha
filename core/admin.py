@@ -32,11 +32,11 @@ class ServiceAdmin(admin.ModelAdmin):
 
 @admin.register(Material)
 class MaterialAdmin(admin.ModelAdmin):
-    list_display = ('name', 'category', 'is_featured', 'sort_order', 'created_at')
+    list_display = ('name', 'category', 'linked_product', 'is_featured', 'sort_order', 'created_at')
     list_filter = ('category', 'is_featured')
     search_fields = ('name', 'category', 'description')
     prepopulated_fields = {'slug': ('name',)}
-    list_editable = ('is_featured', 'sort_order')
+    list_editable = ('linked_product', 'is_featured', 'sort_order')
 
 @admin.register(ProductCategory)
 class ProductCategoryAdmin(admin.ModelAdmin):

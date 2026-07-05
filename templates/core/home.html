@@ -175,17 +175,21 @@
             {% if featured_materials %}
                 {% for material in featured_materials %}
                     <div class="w-[280px] md:w-auto bg-surface-white rounded-lg shadow-sm border border-border-subtle overflow-hidden card-elevation mr-4 md:mr-0">
-                        <div class="relative h-48 w-full bg-surface-container-high overflow-hidden">
+                        <a href="{% if material.linked_product %}{% url 'core:product_detail' material.linked_product.slug %}{% else %}/products/?q={{ material.name|urlencode }}{% endif %}" class="block relative h-48 w-full bg-surface-container-high overflow-hidden group">
                             <img src="{% if material.image %}{{ material.image.url }}{% else %}https://images.unsplash.com/photo-1590069261209-f8e9b8642343?auto=format&fit=crop&w=600&q=80{% endif %}" 
                                  alt="{{ material.name }}" 
-                                 class="w-full h-full object-cover transition-transform duration-500 hover:scale-110" 
+                                 class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" 
                                  loading="lazy"/>
                             <span class="absolute top-3 left-3 bg-secondary-container/90 text-on-secondary-container font-label-md text-label-md px-3 py-1 rounded-full uppercase tracking-wider shadow">
                                 {{ material.category }}
                             </span>
-                        </div>
+                        </a>
                         <div class="p-6">
-                            <h3 class="font-headline-sm text-headline-sm text-primary mb-2 line-clamp-1">{{ material.name }}</h3>
+                            <h3 class="font-headline-sm text-headline-sm text-primary mb-2 line-clamp-1">
+                                <a href="{% if material.linked_product %}{% url 'core:product_detail' material.linked_product.slug %}{% else %}/products/?q={{ material.name|urlencode }}{% endif %}" class="hover:text-secondary transition-colors">
+                                    {{ material.name }}
+                                </a>
+                            </h3>
                             <p class="font-body-sm text-body-sm text-on-surface-variant line-clamp-2">{{ material.description }}</p>
                         </div>
                     </div>
