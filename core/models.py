@@ -34,14 +34,24 @@ class Statistic(models.Model):
     def __str__(self):
         return f"{self.label}: {self.value}"
 
+class ServiceCategory(models.Model):
+    name = models.CharField(max_length=200)
+    slug = models.SlugField(unique=True)
+    description = models.TextField(blank=True)
+    icon_class = models.CharField(max_length=100, blank=True, help_text="Material Symbol icon name, e.g., build")
+    sort_order = models.IntegerField(default=0)
+
+    class Meta:
+        verbose_name = "Service Category"
+        verbose_name_plural = "Service Categories"
+        ordering = ['sort_order', 'name']
+
+    def __str__(self):
+        return self.name
+
 class Service(models.Model):
-    CATEGORY_CHOICES = [
-        ('MATERIAL', 'Construction Material Supply'),
-        ('CONSTRUCTION', 'Construction Services'),
-    ]
-    
     title = models.CharField(max_length=200)
-    category = models.CharField(max_length=50, choices=CATEGORY_CHOICES)
+    category = models.ForeignKey(ServiceCategory, on_delete=models.CASCADE, related_name='services')
     slug = models.SlugField(unique=True)
     short_description = models.CharField(max_length=300)
     full_description = models.TextField()

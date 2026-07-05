@@ -1,6 +1,6 @@
 from django.test import TestCase
 from django.urls import reverse
-from .models import CompanyInfo, Statistic, Service, ProductCategory, Product, Project, Enquiry
+from .models import CompanyInfo, Statistic, ServiceCategory, Service, ProductCategory, Product, Project, Enquiry
 from .forms import EnquiryForm
 
 class VirukshaTests(TestCase):
@@ -19,11 +19,17 @@ class VirukshaTests(TestCase):
             value="10+",
             icon_class="architecture",
         )
+        # Create service category
+        self.service_category = ServiceCategory.objects.create(
+            name="Construction Material Supply",
+            slug="material-supply",
+            icon_class="build"
+        )
         # Create a service
         self.service = Service.objects.create(
             title="Fasteners Supply",
             slug="fasteners-supply",
-            category="MATERIAL",
+            category=self.service_category,
             icon_class="build",
             short_description="Heavy duty fasteners",
             is_featured=True

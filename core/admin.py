@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import CompanyInfo, Statistic, Service, Material, ProductCategory, Product, ProductImage, Project, ProjectImage, Enquiry
+from .models import CompanyInfo, Statistic, ServiceCategory, Service, Material, ProductCategory, Product, ProductImage, Project, ProjectImage, Enquiry
 
 @admin.register(CompanyInfo)
 class CompanyInfoAdmin(admin.ModelAdmin):
@@ -15,6 +15,12 @@ class CompanyInfoAdmin(admin.ModelAdmin):
 class StatisticAdmin(admin.ModelAdmin):
     list_display = ('label', 'value', 'icon_class', 'sort_order')
     list_editable = ('value', 'icon_class', 'sort_order')
+
+@admin.register(ServiceCategory)
+class ServiceCategoryAdmin(admin.ModelAdmin):
+    list_display = ('name', 'slug', 'sort_order')
+    prepopulated_fields = {'slug': ('name',)}
+    list_editable = ('sort_order',)
 
 @admin.register(Service)
 class ServiceAdmin(admin.ModelAdmin):

@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_object_or_404
 from django.core.paginator import Paginator
 from django.db.models import Q
-from .models import CompanyInfo, Statistic, Service, Material, ProductCategory, Product, Project
+from .models import CompanyInfo, Statistic, ServiceCategory, Service, Material, ProductCategory, Product, Project
 from .forms import EnquiryForm
 
 def home(request):
@@ -23,11 +23,11 @@ def home(request):
 
 def services_view(request):
     company_info = CompanyInfo.objects.first()
-    services = Service.objects.all()
+    service_categories = ServiceCategory.objects.prefetch_related('services').all()
     materials = Material.objects.all()
     context = {
         'company_info': company_info,
-        'services': services,
+        'service_categories': service_categories,
         'materials': materials,
     }
     return render(request, 'core/services.html', context)

@@ -16,9 +16,11 @@
 
 <!-- Services Sections Navigation Shortcuts -->
 <div class="bg-surface-white border-b border-border-subtle py-4 sticky top-16 md:top-20 z-30">
-    <div class="max-w-container-max mx-auto px-gutter flex gap-6">
+    <div class="max-w-container-max mx-auto px-gutter flex flex-wrap gap-6">
         <a href="#materials-section" class="font-label-lg text-label-lg text-on-surface-variant hover:text-secondary transition-colors">Construction Materials</a>
-        <a href="#construction-section" class="font-label-lg text-label-lg text-on-surface-variant hover:text-secondary transition-colors">Construction Services</a>
+        {% for category in service_categories %}
+            <a href="#category-{{ category.slug }}" class="font-label-lg text-label-lg text-on-surface-variant hover:text-secondary transition-colors">{{ category.name }}</a>
+        {% endfor %}
     </div>
 </div>
 
@@ -58,18 +60,21 @@
     </div>
 </section>
 
-<!-- Construction Services Section -->
-<section id="construction-section" class="py-xl bg-surface-alt border-t border-border-subtle">
+<!-- Service Categories Section -->
+{% for category in service_categories %}
+<section id="category-{{ category.slug }}" class="py-xl bg-surface-alt border-t border-border-subtle">
     <div class="max-w-container-max mx-auto px-gutter">
         <div class="mb-lg">
-            <h2 class="font-headline-lg text-headline-lg text-primary font-bold">Construction Services</h2>
+            <h2 class="font-headline-lg text-headline-lg text-primary font-bold">{{ category.name }}</h2>
             <div class="w-12 h-1 bg-[#d4942a] mt-xs"></div>
-            <p class="font-body-md text-body-md text-on-surface-variant mt-sm max-w-2xl">End-to-end building and infrastructure development solutions matching commercial and civil guidelines.</p>
+            {% if category.description %}
+                <p class="font-body-md text-body-md text-on-surface-variant mt-sm max-w-2xl">{{ category.description }}</p>
+            {% endif %}
         </div>
         
         <div class="space-y-12">
-            {% if services %}
-                {% for service in services %}
+            {% if category.services.all %}
+                {% for service in category.services.all %}
                     <div id="service-{{ service.slug }}" class="bg-surface-white rounded-lg shadow-sm border border-border-subtle p-8 flex flex-col md:flex-row gap-8 items-center card-elevation">
                         <!-- Left Side: Icon & Title -->
                         <div class="flex-shrink-0 w-20 h-20 rounded-full bg-secondary/10 flex items-center justify-center text-secondary">
@@ -78,7 +83,7 @@
                         <!-- Right Side: Content -->
                         <div class="flex-grow">
                             <span class="font-label-md text-label-md text-[#d4942a] uppercase tracking-wider block mb-1">
-                                {% if service.category == 'CONSTRUCTION' %}Construction division{% else %}Material supply division{% endif %}
+                                {{ category.name }}
                             </span>
                             <h3 class="font-headline-md text-headline-md text-primary mb-3">{{ service.title }}</h3>
                             <p class="font-body-md text-body-md text-on-surface-variant mb-4">{{ service.short_description }}</p>
@@ -92,9 +97,10 @@
                     </div>
                 {% endfor %}
             {% else %}
-                <p class="text-on-surface-variant">No services available at the moment.</p>
+                <p class="text-on-surface-variant">No services available in this category.</p>
             {% endif %}
         </div>
     </div>
 </section>
+{% endfor %}
 {% endblock %}
