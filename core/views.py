@@ -1,7 +1,10 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.core.paginator import Paginator
 from django.db.models import Q
-from .models import CompanyInfo, Statistic, Service, Material, ProductCategory, Product, Project
+from django.contrib.admin.views.decorators import staff_member_required
+from django.views.decorators.http import require_POST
+from django.http import JsonResponse
+from .models import CompanyInfo, Statistic, Service, Material, ProductCategory, Product, Project, Enquiry
 from .forms import EnquiryForm
 
 def home(request):
@@ -187,6 +190,60 @@ def project_detail_view(request, slug):
         'services_list': services_list,
     }
     return render(request, 'core/project_detail.html', context)
+
+
+@staff_member_required
+def admin_dashboard_enquiries(request):
+    search_query = request.GET.get('q', '')
+    enquiries = Enquiry.objects.all().order_by('-created_at')
+    if search_query:
+        enquiries = enquiries.filter(
+            Q(name__icontains=search_query) |
+            Q(email__icontains=search_query) |
+            Q(subject__icontains=search_query) |
+            Q(message__icontains=search_query)
+        )
+    
+    total_enquiries = Enquiry.objects.count()
+    unread_messages = Enquiry.objects.filter(is_read=False).count()
+    active_products = Product.objects.filter(is_active=True).count()
+    finished_projects = Project.objects.count()
+    company_info = CompanyInfo.objects.first()
+    
+    context = {
+        'enquiries': enquiries,
+        'search_query': search_query,
+        'total_enquiries': total_enquiries,
+        'unread_messages': unread_messages,
+        'active_products': active_products,
+        'finished_projects': finished_projects,
+        'company_info': company_info,
+    }
+    return render(request, 'core/admin_dashboard.html', context)
+
+
+@staff_member_required
+@require_POST
+def mark_enquiry_read(request, pk):
+    enquiry = get_object_or_404(Enquiry, pk=pk)
+    enquiry.is_read = True
+    enquiry.save()
+    return JsonResponse({'status': 'success'})
+
+
+@staff_member_required
+@require_POST
+def mark_selected_read(request):
+    import json
+    try:
+        data = json.loads(request.body)
+        pks = data.get('pks', [])
+    except Exception:
+        pks = request.POST.getlist('pks[]')
+    
+    Enquiry.objects.filter(pk__in=pks).update(is_read=True)
+    return JsonResponse({'status': 'success'})
+
 
 
 
