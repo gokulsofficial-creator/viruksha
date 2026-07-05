@@ -1,0 +1,116 @@
+/* Viruksha Enterprises — Design System stylesheet */
+
+/* CSS custom properties for fonts and styling details matching Stitch design MD */
+:root {
+    --primary: #040d1b;
+    --primary-container: #1a2332;
+    --secondary: #825500;
+    --secondary-container: #ffb94e;
+    --accent: #d4942a;
+    --accent-hover: #b87f21;
+    --background: #fcf9f8;
+    --surface: #fcf9f8;
+    --surface-white: #ffffff;
+    --surface-alt: #f5f5f5;
+    --text-color: #2d2d2d;
+    --border-subtle: #e0e0e0;
+    --outline: #75777d;
+}
+
+/* Reset and basic setup */
+html {
+    scroll-behavior: smooth;
+    height: 100%;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    color: var(--text-color);
+}
+
+/* Section Header Underline Accent */
+.section-header::after {
+    content: '';
+    display: block;
+    width: 40px;
+    height: 4px;
+    background-color: var(--accent);
+    margin-top: 12px;
+    border-radius: 2px;
+    transition: width 0.3s ease;
+}
+
+.section-header:hover::after {
+    width: 60px;
+}
+
+/* Hover effects for buttons/cards */
+.btn-primary {
+    background-color: var(--accent);
+    color: #ffffff;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn-primary:hover {
+    background-color: var(--accent-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(212, 148, 42, 0.35);
+}
+
+.btn-secondary {
+    border: 1.5px solid var(--primary-container);
+    color: var(--primary-container);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn-secondary:hover {
+    background-color: var(--primary-container);
+    color: #ffffff;
+    transform: translateY(-2px);
+}
+
+/* Shadow utilities matching Design MD elevation */
+.card-elevation {
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.card-elevation:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+}
+
+/* Horizontal scroll styling */
+.horizontal-scroll-snap {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+}
+
+.horizontal-scroll-snap > * {
+    scroll-snap-align: start;
+    flex-shrink: 0;
+}
+
+/* Hide scrollbar but keep functionality */
+.no-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+.no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+/* Accessibility options */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}

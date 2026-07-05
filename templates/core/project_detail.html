@@ -1,0 +1,206 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ project.title }} | {{ company_info.company_name|default:"Viruksha Enterprises" }}{% endblock %}
+
+{% block content %}
+<!-- Project Hero Section -->
+<section class="relative w-full h-[400px] md:h-[500px] flex items-end pb-12 overflow-hidden bg-primary text-surface-white">
+    <!-- Background Image -->
+    <div class="absolute inset-0 bg-cover bg-center opacity-40" 
+         style="background-image: url('{% if project.thumbnail %}{{ project.thumbnail.url }}{% else %}https://images.unsplash.com/photo-1541888946425-d81bb19240f5?auto=format&fit=crop&w=1200&q=80{% endif %}');">
+    </div>
+    <!-- Dark Gradient Overlay -->
+    <div class="absolute inset-0 bg-gradient-to-t from-primary via-primary/60 to-transparent"></div>
+    
+    <!-- Hero Content -->
+    <div class="relative z-10 max-w-container-max mx-auto px-gutter w-full">
+        <div class="max-w-3xl">
+            <span class="inline-block px-3 py-1 mb-4 bg-secondary/20 text-[#d4942a] backdrop-blur-sm rounded font-label-md text-label-md border border-secondary/30 uppercase tracking-wider font-bold">
+                {{ project.get_category_display }}
+            </span>
+            <h1 class="font-display-lg text-display-lg md:text-5xl text-surface-white mb-3 font-bold drop-shadow-md">
+                {{ project.title }}
+            </h1>
+            <div class="flex items-center text-on-primary-container font-body-lg text-body-lg gap-2">
+                <span class="material-symbols-outlined text-secondary text-[20px]">location_on</span>
+                <span>{{ project.location }}</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Main Details Layout -->
+<section class="max-w-container-max mx-auto px-gutter py-16">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
+        
+        <!-- Left Column: Overview & Services (8 cols) -->
+        <div class="lg:col-span-8 space-y-12">
+            <!-- About Project -->
+            <div>
+                <h2 class="font-headline-lg text-headline-lg text-primary mb-2 font-bold">About This Project</h2>
+                <div class="w-16 h-1 bg-secondary mb-6"></div>
+                <div class="font-body-md text-body-md text-on-surface-variant space-y-4 leading-relaxed">
+                    {{ project.description|linebreaks }}
+                </div>
+            </div>
+            
+            <!-- Services Delivered -->
+            {% if services_list %}
+                <div>
+                    <h3 class="font-headline-md text-headline-md text-primary mb-2 font-bold">Services & Deliverables</h3>
+                    <div class="w-12 h-1 bg-secondary mb-6"></div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        {% for svc in services_list %}
+                            <div class="flex items-start gap-4 p-4 bg-surface-white rounded-lg border border-border-subtle hover:-translate-y-0.5 hover:shadow-sm transition-all duration-300">
+                                <div class="shrink-0 w-10 h-10 rounded-full bg-secondary/10 flex items-center justify-center text-secondary">
+                                    <span class="material-symbols-outlined text-[20px]">check_circle</span>
+                                </div>
+                                <div class="flex-grow pt-1">
+                                    <h4 class="font-label-lg text-label-lg text-primary font-bold">{{ svc }}</h4>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
+
+            <!-- Project Gallery -->
+            {% if project.gallery_images.exists %}
+                <div>
+                    <h3 class="font-headline-md text-headline-md text-primary mb-2 font-bold">Project Gallery</h3>
+                    <div class="w-12 h-1 bg-secondary mb-6"></div>
+                    <div class="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                        {% for img in project.gallery_images.all %}
+                            <div class="group relative overflow-hidden rounded-lg bg-surface-white border border-border-subtle aspect-square cursor-pointer">
+                                <img src="{{ img.image.url }}" alt="{{ img.caption|default:project.title }}" 
+                                     class="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
+                                     onclick="openLightbox('{{ img.image.url }}')"
+                                     loading="lazy"/>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- Right Column: Sidebar (4 cols) -->
+        <div class="lg:col-span-4 space-y-6">
+            <!-- Project Meta Information -->
+            <div class="bg-surface-white rounded-xl shadow-sm p-6 border border-border-subtle">
+                <h3 class="font-headline-sm text-headline-sm text-primary mb-4 font-bold">Project Details</h3>
+                <div class="w-12 h-1 bg-secondary mb-6"></div>
+                
+                <ul class="space-y-6 font-body-sm text-body-sm text-on-surface-variant">
+                    {% if project.client_name %}
+                        <li class="flex items-start gap-3">
+                            <span class="material-symbols-outlined text-secondary text-[20px]">person</span>
+                            <div>
+                                <span class="block text-on-surface-variant/80 uppercase tracking-wider text-xs font-semibold">Client</span>
+                                <span class="text-base font-bold text-primary">{{ project.client_name }}</span>
+                            </div>
+                        </li>
+                    {% endif %}
+                    
+                    {% if project.completion_date %}
+                        <li class="flex items-start gap-3">
+                            <span class="material-symbols-outlined text-secondary text-[20px]">calendar_today</span>
+                            <div>
+                                <span class="block text-on-surface-variant/80 uppercase tracking-wider text-xs font-semibold">Completion Date</span>
+                                <span class="text-base font-bold text-primary">{{ project.completion_date|date:"F Y" }}</span>
+                            </div>
+                        </li>
+                    {% endif %}
+                    
+                    <li class="flex items-start gap-3">
+                        <span class="material-symbols-outlined text-secondary text-[20px]">location_on</span>
+                        <div>
+                            <span class="block text-on-surface-variant/80 uppercase tracking-wider text-xs font-semibold">Location</span>
+                            <span class="text-base font-bold text-primary">{{ project.location }}</span>
+                        </div>
+                    </li>
+                    
+                    <li class="flex items-start gap-3">
+                        <span class="material-symbols-outlined text-secondary text-[20px]">category</span>
+                        <div>
+                            <span class="block text-on-surface-variant/80 uppercase tracking-wider text-xs font-semibold">Category</span>
+                            <span class="text-base font-bold text-primary">{{ project.get_category_display }}</span>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Discuss Project CTA Card -->
+            <div class="bg-primary text-surface-white rounded-xl p-6 border border-primary/20 shadow-sm">
+                <h3 class="font-headline-sm text-headline-sm mb-2 font-bold">Have a Similar Project?</h3>
+                <p class="font-body-sm text-body-sm text-on-primary-container mb-6">
+                    Partner with us for reliable construction services and top-grade material procurement tailored to your project.
+                </p>
+                <a href="/enquiry/?subject={{ 'Enquiry regarding similar project to '|urlencode }}{{ project.title|urlencode }}&type=construction" 
+                   class="w-full bg-[#d4942a] hover:bg-[#b87f21] text-surface-white font-label-lg text-label-lg py-3 rounded transition-colors text-center block font-bold shadow hover:scale-[0.99] duration-150">
+                    Get a Consultation
+                </a>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<!-- Related Projects Grid -->
+{% if related_projects %}
+    <section class="bg-surface-alt border-t border-border-subtle py-16">
+        <div class="max-w-container-max mx-auto px-gutter">
+            <h2 class="font-headline-md text-headline-md text-primary mb-8 font-bold">Other Projects</h2>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-gutter">
+                {% for item in related_projects %}
+                    <div class="bg-surface-white rounded-lg overflow-hidden border border-border-subtle flex flex-col hover:-translate-y-1 hover:shadow-md transition-all duration-300">
+                        <div class="relative aspect-[4/3] bg-surface-container-high overflow-hidden">
+                            <img src="{% if item.thumbnail %}{{ item.thumbnail.url }}{% else %}https://images.unsplash.com/photo-1541888946425-d81bb19240f5?auto=format&fit=crop&w=600&q=80{% endif %}" 
+                                 alt="{{ item.title }}" class="w-full h-full object-cover"/>
+                        </div>
+                        <div class="p-5 flex-grow flex flex-col">
+                            <span class="text-xs text-secondary font-bold uppercase tracking-wider mb-1">{{ item.get_category_display }}</span>
+                            <h3 class="font-headline-sm text-headline-sm text-primary mb-2 line-clamp-1 font-semibold">{{ item.title }}</h3>
+                            <p class="font-body-sm text-body-sm text-on-surface-variant mb-4 line-clamp-2">{{ item.description }}</p>
+                            <a href="/projects/{{ item.slug }}/" class="text-primary font-label-md text-label-md hover:text-[#d4942a] transition-colors mt-auto inline-flex items-center gap-1 font-bold">
+                                View Details <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+                            </a>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+{% endif %}
+
+<!-- Lightbox Modal container -->
+<div id="lightbox" class="fixed inset-0 bg-primary/95 z-50 flex items-center justify-center hidden opacity-0 transition-opacity duration-300" onclick="closeLightbox()">
+    <button class="absolute top-6 right-6 text-surface-white hover:text-[#d4942a] transition-colors">
+        <span class="material-symbols-outlined text-[36px]">close</span>
+    </button>
+    <div class="max-w-[90%] max-h-[85%] overflow-hidden flex items-center justify-center">
+        <img id="lightbox-image" class="object-contain max-w-full max-h-full rounded shadow-2xl" src="" alt="Enlarged view"/>
+    </div>
+</div>
+
+<!-- Lightbox script -->
+<script>
+    function openLightbox(src) {
+        const lightbox = document.getElementById('lightbox');
+        const img = document.getElementById('lightbox-image');
+        img.src = src;
+        lightbox.classList.remove('hidden');
+        setTimeout(() => {
+            lightbox.classList.remove('opacity-0');
+        }, 50);
+    }
+    function closeLightbox() {
+        const lightbox = document.getElementById('lightbox');
+        lightbox.classList.add('opacity-0');
+        setTimeout(() => {
+            lightbox.classList.add('hidden');
+        }, 300);
+    }
+</script>
+{% endblock %}

@@ -1,0 +1,424 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Home | {{ company_info.company_name|default:"Viruksha Enterprises" }}{% endblock %}
+
+{% block content %}
+<!-- HERO SECTION -->
+<header class="relative w-full h-[calc(100vh-80px)] flex items-center justify-center bg-primary">
+    <!-- Hero Image Background -->
+    <div class="absolute inset-0 z-0 bg-cover bg-center" 
+         style="background-image: url('{% if company_info.hero_image %}{{ company_info.hero_image.url }}{% else %}https://images.unsplash.com/photo-1541888946425-d81bb19240f5?auto=format&fit=crop&w=1920&q=80{% endif %}')">
+    </div>
+    <!-- Gradient Overlay -->
+    <div class="absolute inset-0 bg-gradient-to-b from-primary/80 to-primary/60 z-10"></div>
+    
+    <!-- Hero Content -->
+    <div class="relative z-20 text-center px-gutter max-w-container-max mx-auto flex flex-col items-center">
+        <h1 class="font-display-lg text-display-lg text-surface-white mb-6 tracking-tight drop-shadow-lg animate-fade-in-up">
+            {{ company_info.company_name|default:"Viruksha Enterprises" }}
+        </h1>
+        <p class="font-body-lg text-body-lg text-surface-variant mb-10 max-w-2xl mx-auto opacity-90">
+            {{ company_info.tagline|default:"Building Excellence, Delivering Quality." }}
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4 items-center justify-center">
+            <a href="/services/" class="bg-secondary hover:bg-accent-hover text-surface-white font-label-lg text-label-lg px-8 py-4 rounded transition-all transform hover:-translate-y-1 shadow-lg font-bold">
+                Our Services
+            </a>
+            <a href="/enquiry/" class="bg-transparent border-2 border-surface-white text-surface-white hover:bg-surface-white hover:text-primary font-label-lg text-label-lg px-8 py-4 rounded transition-all transform hover:-translate-y-1 font-bold">
+                Get a Quote
+            </a>
+        </div>
+    </div>
+    <!-- Scroll Down Arrow -->
+    <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-20 animate-bounce">
+        <a href="#about-section" class="text-surface-white hover:text-secondary transition-colors">
+            <span class="material-symbols-outlined text-[32px]">keyboard_arrow_down</span>
+        </a>
+    </div>
+</header>
+
+<!-- ABOUT SECTION -->
+<section id="about-section" class="py-xl bg-surface">
+    <div class="max-w-container-max mx-auto px-gutter grid grid-cols-1 md:grid-cols-2 gap-xl items-center">
+        <div>
+            <h2 class="font-headline-lg text-headline-lg text-primary mb-6 section-header">
+                About {{ company_info.company_name|default:"Viruksha Enterprises" }}
+            </h2>
+            <div class="font-body-md text-body-md text-on-surface-variant space-y-4">
+                {% if company_info.about_text %}
+                    {{ company_info.about_text|linebreaks }}
+                {% else %}
+                    <p>
+                        Founded on the principles of structural integrity and modern architectural excellence, Viruksha Enterprises stands as a pillar of reliability in the construction and material logistics industry. We bring decades of precision engineering to every site.
+                    </p>
+                    <p>
+                        Our foundation-first philosophy ensures that whether we are supplying high-grade materials or constructing state-of-the-art facilities, our work is enduring, authoritative, and strictly premium.
+                    </p>
+                {% endif %}
+            </div>
+        </div>
+        
+        <!-- Stat Cards Grid -->
+        <div class="grid grid-cols-2 gap-md">
+            {% if statistics %}
+                {% for stat in statistics %}
+                    <div class="stat-card bg-surface-white p-6 rounded-lg shadow-sm border border-border-subtle hover:-translate-y-1 hover:shadow-lg transition-all duration-300">
+                        <div class="w-12 h-12 rounded-full bg-secondary-container/15 flex items-center justify-center mb-4 text-secondary">
+                            <span class="material-symbols-outlined" data-weight="fill">{{ stat.icon_class }}</span>
+                        </div>
+                        <!-- We extract the numeric portion to animate, keeping the suffix (like '+') static -->
+                        <h3 class="font-headline-md text-headline-md text-primary flex items-baseline">
+                            <span class="counter-value" data-target="{{ stat.value|slice:':-1' }}">{{ stat.value }}</span>
+                        </h3>
+                        <p class="font-label-md text-label-md text-on-surface-variant mt-1 uppercase tracking-wider">{{ stat.label }}</p>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <!-- Static Fallback if no stats in DB -->
+                <div class="stat-card bg-surface-white p-6 rounded-lg shadow-sm border border-border-subtle hover:-translate-y-1 hover:shadow-lg transition-all duration-300">
+                    <div class="w-12 h-12 rounded-full bg-secondary-container/15 flex items-center justify-center mb-4 text-secondary">
+                        <span class="material-symbols-outlined" data-weight="fill">domain</span>
+                    </div>
+                    <h3 class="font-headline-md text-headline-md text-primary">150+</h3>
+                    <p class="font-label-md text-label-md text-on-surface-variant mt-1 uppercase tracking-wider">Projects Completed</p>
+                </div>
+                <div class="stat-card bg-surface-white p-6 rounded-lg shadow-sm border border-border-subtle hover:-translate-y-1 hover:shadow-lg transition-all duration-300">
+                    <div class="w-12 h-12 rounded-full bg-secondary-container/15 flex items-center justify-center mb-4 text-secondary">
+                        <span class="material-symbols-outlined" data-weight="fill">groups</span>
+                    </div>
+                    <h3 class="font-headline-md text-headline-md text-primary">200+</h3>
+                    <p class="font-label-md text-label-md text-on-surface-variant mt-1 uppercase tracking-wider">Happy Clients</p>
+                </div>
+                <div class="stat-card bg-surface-white p-6 rounded-lg shadow-sm border border-border-subtle hover:-translate-y-1 hover:shadow-lg transition-all duration-300">
+                    <div class="w-12 h-12 rounded-full bg-secondary-container/15 flex items-center justify-center mb-4 text-secondary">
+                        <span class="material-symbols-outlined" data-weight="fill">military_tech</span>
+                    </div>
+                    <h3 class="font-headline-md text-headline-md text-primary">10+</h3>
+                    <p class="font-label-md text-label-md text-on-surface-variant mt-1 uppercase tracking-wider">Years Experience</p>
+                </div>
+                <div class="stat-card bg-surface-white p-6 rounded-lg shadow-sm border border-border-subtle hover:-translate-y-1 hover:shadow-lg transition-all duration-300">
+                    <div class="w-12 h-12 rounded-full bg-secondary-container/15 flex items-center justify-center mb-4 text-secondary">
+                        <span class="material-symbols-outlined" data-weight="fill">engineering</span>
+                    </div>
+                    <h3 class="font-headline-md text-headline-md text-primary">50+</h3>
+                    <p class="font-label-md text-label-md text-on-surface-variant mt-1 uppercase tracking-wider">Team Members</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+<!-- SERVICES SECTION -->
+<section class="py-xl bg-surface-alt">
+    <div class="max-w-container-max mx-auto px-gutter">
+        <div class="text-center mb-12">
+            <h2 class="font-headline-lg text-headline-lg text-primary section-header inline-block">Our Services</h2>
+            <p class="font-body-md text-body-md text-on-surface-variant mt-4 max-w-xl mx-auto">
+                Discover our comprehensive range of materials and professional construction services designed to build excellence.
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-md">
+            {% if featured_services %}
+                {% for service in featured_services %}
+                    <div class="service-card bg-surface-white p-8 rounded-lg shadow-sm border border-border-subtle hover:-translate-y-1 hover:shadow-lg transition-all duration-300 flex flex-col items-start">
+                        <div class="w-14 h-14 rounded-full bg-secondary/10 flex items-center justify-center mb-6 text-secondary">
+                            <span class="material-symbols-outlined text-[28px]">{{ service.icon_class }}</span>
+                        </div>
+                        <h3 class="font-headline-sm text-headline-sm text-primary mb-4">{{ service.title }}</h3>
+                        <p class="font-body-sm text-body-sm text-on-surface-variant mb-6 flex-grow">{{ service.short_description }}</p>
+                        <a href="/services/#service-{{ service.slug }}" class="font-label-lg text-label-lg text-secondary hover:text-accent-hover font-bold inline-flex items-center gap-1">
+                            Learn More <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+                        </a>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <!-- Static Fallback if no services seeded yet -->
+                <div class="service-card bg-surface-white p-8 rounded-lg shadow-sm border border-border-subtle hover:-translate-y-1 hover:shadow-lg transition-all duration-300 flex flex-col items-start">
+                    <div class="w-14 h-14 rounded-full bg-secondary/10 flex items-center justify-center mb-6 text-secondary">
+                        <span class="material-symbols-outlined text-[28px]">handyman</span>
+                    </div>
+                    <h3 class="font-headline-sm text-headline-sm text-primary mb-4">Construction Material Supply</h3>
+                    <p class="font-body-sm text-body-sm text-on-surface-variant mb-6 flex-grow">We supply high-quality industrial and construction materials including U-Clamps, pipe fittings, fasteners, hardware components, and other accessories.</p>
+                    <a href="/services/" class="font-label-lg text-label-lg text-secondary hover:text-accent-hover font-bold inline-flex items-center gap-1">
+                        Learn More <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+                    </a>
+                </div>
+                <div class="service-card bg-surface-white p-8 rounded-lg shadow-sm border border-border-subtle hover:-translate-y-1 hover:shadow-lg transition-all duration-300 flex flex-col items-start">
+                    <div class="w-14 h-14 rounded-full bg-secondary/10 flex items-center justify-center mb-6 text-secondary">
+                        <span class="material-symbols-outlined text-[28px]">apartment</span>
+                    </div>
+                    <h3 class="font-headline-sm text-headline-sm text-primary mb-4">Construction Services</h3>
+                    <p class="font-body-sm text-body-sm text-on-surface-variant mb-6 flex-grow">Providing reliable residential, commercial, industrial, and civil construction solutions with an experienced project management team.</p>
+                    <a href="/services/" class="font-label-lg text-label-lg text-secondary hover:text-accent-hover font-bold inline-flex items-center gap-1">
+                        Learn More <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+<!-- MATERIALS SECTION -->
+<section class="py-xl bg-surface">
+    <div class="max-w-container-max mx-auto px-gutter">
+        <div class="text-center mb-12">
+            <h2 class="font-headline-lg text-headline-lg text-primary section-header inline-block">Quality Materials We Supply</h2>
+            <p class="font-body-md text-body-md text-on-surface-variant mt-4 max-w-xl mx-auto">
+                We procure and supply high-quality industrial and construction materials for projects of all scales.
+            </p>
+        </div>
+
+        <!-- Horizontal scrollable strip on mobile, grid on desktop -->
+        <div class="horizontal-scroll-snap md:grid md:grid-cols-4 gap-md no-scrollbar pb-4 md:pb-0">
+            {% if featured_materials %}
+                {% for material in featured_materials %}
+                    <div class="w-[280px] md:w-auto bg-surface-white rounded-lg shadow-sm border border-border-subtle overflow-hidden card-elevation mr-4 md:mr-0">
+                        <div class="relative h-48 w-full bg-surface-container-high overflow-hidden">
+                            <img src="{% if material.image %}{{ material.image.url }}{% else %}https://images.unsplash.com/photo-1590069261209-f8e9b8642343?auto=format&fit=crop&w=600&q=80{% endif %}" 
+                                 alt="{{ material.name }}" 
+                                 class="w-full h-full object-cover transition-transform duration-500 hover:scale-110" 
+                                 loading="lazy"/>
+                            <span class="absolute top-3 left-3 bg-secondary-container/90 text-on-secondary-container font-label-md text-label-md px-3 py-1 rounded-full uppercase tracking-wider shadow">
+                                {{ material.category }}
+                            </span>
+                        </div>
+                        <div class="p-6">
+                            <h3 class="font-headline-sm text-headline-sm text-primary mb-2 line-clamp-1">{{ material.name }}</h3>
+                            <p class="font-body-sm text-body-sm text-on-surface-variant line-clamp-2">{{ material.description }}</p>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <!-- Static Fallback if no materials seeded yet -->
+                <div class="w-[280px] md:w-auto bg-surface-white rounded-lg shadow-sm border border-border-subtle overflow-hidden card-elevation mr-4 md:mr-0">
+                    <div class="relative h-48 w-full bg-surface-container-high">
+                        <img src="https://images.unsplash.com/photo-1504307651254-35680f356dfd?auto=format&fit=crop&w=600&q=80" alt="U-Clamps" class="w-full h-full object-cover"/>
+                        <span class="absolute top-3 left-3 bg-secondary-container/90 text-on-secondary-container font-label-md text-label-md px-3 py-1 rounded-full uppercase tracking-wider">Fasteners</span>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="font-headline-sm text-headline-sm text-primary mb-2">High-Tensile U-Clamps</h3>
+                        <p class="font-body-sm text-body-sm text-on-surface-variant">Custom U-Clamps in stainless steel and galvanized finish for heavy-duty pipeline support.</p>
+                    </div>
+                </div>
+                <div class="w-[280px] md:w-auto bg-surface-white rounded-lg shadow-sm border border-border-subtle overflow-hidden card-elevation mr-4 md:mr-0">
+                    <div class="relative h-48 w-full bg-surface-container-high">
+                        <img src="https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=600&q=80" alt="Pipe Fittings" class="w-full h-full object-cover"/>
+                        <span class="absolute top-3 left-3 bg-secondary-container/90 text-on-secondary-container font-label-md text-label-md px-3 py-1 rounded-full uppercase tracking-wider">Pipes</span>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="font-headline-sm text-headline-sm text-primary mb-2">GI Pipe Fittings</h3>
+                        <p class="font-body-sm text-body-sm text-on-surface-variant">Durable elbows, tees, couplings, and adapters for water and industrial pipe grids.</p>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+<!-- Featured Products Section -->
+<section class="py-xl bg-surface-alt border-t border-border-subtle">
+    <div class="max-w-container-max mx-auto px-gutter">
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-lg">
+            <div>
+                <h2 class="font-headline-lg text-headline-lg text-primary font-bold">Featured Products</h2>
+                <div class="w-12 h-1 bg-[#d4942a] mt-xs"></div>
+                <p class="font-body-md text-body-md text-on-surface-variant mt-sm max-w-2xl">High-quality accessories, structural components, and safety equipment ready for dispatch.</p>
+            </div>
+            <a href="{% url 'core:products' %}" class="btn-secondary px-6 py-2.5 rounded font-label-lg text-label-lg font-bold inline-flex items-center gap-1 mt-4 md:mt-0 shadow-sm">
+                View Full Catalog <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+            </a>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-gutter">
+            {% if featured_products %}
+                {% for product in featured_products %}
+                    <div class="bg-surface-white rounded-lg overflow-hidden border border-border-subtle flex flex-col hover:-translate-y-1 hover:shadow-md transition-all duration-300">
+                        <div class="relative aspect-[4/3] bg-surface-container-high overflow-hidden">
+                            <img src="{% if product.thumbnail %}{{ product.thumbnail.url }}{% else %}https://images.unsplash.com/photo-1504307651254-35680f356dfd?auto=format&fit=crop&w=600&q=80{% endif %}" 
+                                 alt="{{ product.name }}" class="w-full h-full object-cover transition-transform duration-500 hover:scale-105" loading="lazy"/>
+                            <div class="absolute bottom-3 left-3 bg-primary/75 text-surface-white backdrop-blur-sm px-2.5 py-0.5 rounded text-[11px] font-bold uppercase tracking-wider">
+                                {{ product.category.name }}
+                            </div>
+                        </div>
+                        <div class="p-5 flex-grow flex flex-col">
+                            <h3 class="font-headline-sm text-headline-sm text-primary mb-1 line-clamp-1 text-base font-semibold">{{ product.name }}</h3>
+                            <p class="font-body-sm text-body-sm text-on-surface-variant mb-4 line-clamp-2">{{ product.short_description }}</p>
+                            <div class="mt-auto pt-4 border-t border-border-subtle/50 flex justify-end">
+                                <a href="{% url 'core:product_detail' product.slug %}" class="text-secondary font-label-md text-label-md hover:text-[#b87f21] transition-colors inline-flex items-center gap-1 font-bold">
+                                    View Details <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p class="text-on-surface-variant col-span-full">No featured products listed yet.</p>
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+<!-- Featured Projects Section -->
+<section class="py-xl border-t border-border-subtle bg-surface-white">
+    <div class="max-w-container-max mx-auto px-gutter">
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-lg">
+            <div>
+                <h2 class="font-headline-lg text-headline-lg text-primary font-bold">Our Engineering Projects</h2>
+                <div class="w-12 h-1 bg-[#d4942a] mt-xs"></div>
+                <p class="font-body-md text-body-md text-on-surface-variant mt-sm max-w-2xl">A showcase of our building, civil infrastructure, and heavy industrial development achievements.</p>
+            </div>
+            <a href="{% url 'core:projects' %}" class="btn-secondary px-6 py-2.5 rounded font-label-lg text-label-lg font-bold inline-flex items-center gap-1 mt-4 md:mt-0 shadow-sm">
+                Explore Portfolio <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+            </a>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-gutter">
+            {% if featured_projects %}
+                {% for project in featured_projects %}
+                    <div class="group relative overflow-hidden rounded-lg bg-surface-alt border border-border-subtle aspect-[4/5] cursor-pointer shadow-sm hover:shadow-lg transition-all duration-300">
+                        <img class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700 ease-in-out" 
+                             src="{% if project.thumbnail %}{{ project.thumbnail.url }}{% else %}https://images.unsplash.com/photo-1541888946425-d81bb19240f5?auto=format&fit=crop&w=800&q=80{% endif %}" 
+                             alt="{{ project.title }}" loading="lazy"/>
+                        <!-- Hover Gradient Overlay -->
+                        <div class="absolute inset-0 bg-gradient-to-t from-primary/95 via-primary/40 to-transparent opacity-90 sm:opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                        <div class="absolute bottom-0 left-0 w-full p-6 flex flex-col justify-end h-full translate-y-0 sm:translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
+                            <span class="inline-block px-3 py-1 bg-surface-white/20 backdrop-blur-sm text-surface-white font-label-md text-label-md rounded-full self-start mb-2">
+                                {{ project.get_category_display }}
+                            </span>
+                            <h3 class="font-headline-sm text-headline-sm text-surface-white mb-1 font-bold">{{ project.title }}</h3>
+                            <p class="font-body-sm text-body-sm text-on-primary-container flex items-center gap-2 mb-4">
+                                <span class="material-symbols-outlined text-sm text-[#d4942a]">location_on</span> {{ project.location }}
+                            </p>
+                            <a href="{% url 'core:project_detail' project.slug %}" class="font-label-lg text-label-lg text-[#ffddb2] flex items-center gap-1 font-bold mt-2">
+                                View Details 
+                                <span class="material-symbols-outlined text-sm transition-transform group-hover:translate-x-1">arrow_forward</span>
+                            </a>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p class="text-on-surface-variant col-span-full">No featured projects listed yet.</p>
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+<!-- Why Choose Us Section -->
+<section class="py-xl bg-surface-alt border-t border-border-subtle">
+    <div class="max-w-container-max mx-auto px-gutter text-center">
+        <div class="mb-lg">
+            <h2 class="font-headline-lg text-headline-lg text-primary font-bold">Why Choose Viruksha</h2>
+            <div class="w-12 h-1 bg-[#d4942a] mx-auto mt-xs"></div>
+            <p class="font-body-md text-body-md text-on-surface-variant mt-sm max-w-2xl mx-auto">We combine premium grade materials supply with professional construction execution for flawless results.</p>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-gutter text-left">
+            <!-- Card 1 -->
+            <div class="bg-surface-white rounded-lg p-6 border border-border-subtle shadow-sm hover:-translate-y-1 transition-all duration-300">
+                <span class="material-symbols-outlined text-[40px] text-secondary mb-4 block">verified</span>
+                <h3 class="font-headline-sm text-headline-sm text-primary mb-2 font-bold">Premium Quality</h3>
+                <p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
+                    Every batch of sand, cement, steel, or fittings we deliver is rigorously tested to match commercial construction standards.
+                </p>
+            </div>
+            <!-- Card 2 -->
+            <div class="bg-surface-white rounded-lg p-6 border border-border-subtle shadow-sm hover:-translate-y-1 transition-all duration-300">
+                <span class="material-symbols-outlined text-[40px] text-secondary mb-4 block">local_shipping</span>
+                <h3 class="font-headline-sm text-headline-sm text-primary mb-2 font-bold">Reliable Delivery</h3>
+                <p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
+                    With an optimized logistics fleet, we guarantee on-time material drop-offs at your job sites, keeping projects on schedule.
+                </p>
+            </div>
+            <!-- Card 3 -->
+            <div class="bg-surface-white rounded-lg p-6 border border-border-subtle shadow-sm hover:-translate-y-1 transition-all duration-300">
+                <span class="material-symbols-outlined text-[40px] text-secondary mb-4 block">engineering</span>
+                <h3 class="font-headline-sm text-headline-sm text-primary mb-2 font-bold">Expert Engineering</h3>
+                <p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
+                    Our construction division is managed by seasoned civil engineers ensuring high safety levels and robust structures.
+                </p>
+            </div>
+            <!-- Card 4 -->
+            <div class="bg-surface-white rounded-lg p-6 border border-border-subtle shadow-sm hover:-translate-y-1 transition-all duration-300">
+                <span class="material-symbols-outlined text-[40px] text-secondary mb-4 block">support_agent</span>
+                <h3 class="font-headline-sm text-headline-sm text-primary mb-2 font-bold">End-to-End Support</h3>
+                <p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
+                    From bulk material planning to final key handover, our team provides continuous consulting and technical support.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Impactful CTA Section -->
+<section class="bg-primary text-surface-white py-xl px-gutter relative overflow-hidden border-t border-border-subtle">
+    <div class="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-surface-white via-transparent to-transparent"></div>
+    <div class="max-w-4xl mx-auto text-center relative z-10 space-y-6">
+        <h2 class="font-display-lg text-display-lg font-bold">Partner with Viruksha Today</h2>
+        <p class="font-body-lg text-body-lg text-on-primary-container max-w-2xl mx-auto leading-relaxed">
+            Whether you need premium construction accessories supplied or an experienced building contractor, we are ready to bring your vision to life.
+        </p>
+        <div class="flex flex-wrap justify-center gap-4 pt-4">
+            <a href="{% url 'core:enquiry' %}" class="bg-[#d4942a] hover:bg-[#b87f21] text-surface-white font-label-lg text-label-lg px-8 py-4 rounded transition-all shadow font-bold hover:scale-[0.98]">
+                Request a Custom Quote
+            </a>
+            <a href="{% url 'core:services' %}" class="bg-transparent hover:bg-surface-white/10 text-surface-white font-label-lg text-label-lg px-8 py-4 rounded border border-surface-white transition-all font-bold">
+                Learn About Services
+            </a>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Count-up animation for stat counters when they enter the viewport
+    document.addEventListener('DOMContentLoaded', () => {
+        const counters = document.querySelectorAll('.counter-value');
+        
+        const countUp = (element) => {
+            const rawTarget = element.textContent;
+            // Parse target number (e.g. "150+" -> 150)
+            const target = parseInt(rawTarget);
+            const suffix = rawTarget.replace(/[0-9]/g, ''); // get "+" or other chars
+            
+            if (isNaN(target)) return;
+            
+            let count = 0;
+            const duration = 2000; // 2 seconds animation
+            const intervalTime = 30; // 30ms step
+            const step = Math.ceil(target / (duration / intervalTime));
+            
+            const timer = setInterval(() => {
+                count += step;
+                if (count >= target) {
+                    element.textContent = target + suffix;
+                    clearInterval(timer);
+                } else {
+                    element.textContent = count + suffix;
+                }
+            }, intervalTime);
+        };
+
+        const observerOptions = {
+            threshold: 0.5, // trigger when 50% visible
+            triggerOnce: true
+        };
+
+        const observer = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const counterElement = entry.target;
+                    countUp(counterElement);
+                    observer.unobserve(counterElement);
+                }
+            });
+        }, observerOptions);
+
+        counters.forEach(counter => {
+            observer.observe(counter);
+        });
+    });
+</script>
+{% endblock %}

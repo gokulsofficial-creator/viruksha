@@ -1,0 +1,178 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Our Products | {{ company_info.company_name|default:"Viruksha Enterprises" }}{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<section class="bg-primary text-surface-white py-xl px-gutter relative overflow-hidden">
+    <div class="absolute inset-0 opacity-10" style="background-image: radial-gradient(circle at 2px 2px, white 1px, transparent 0); background-size: 32px 32px;"></div>
+    <div class="max-w-container-max mx-auto relative z-10">
+        <div class="font-label-lg text-label-lg text-[#d4942a] mb-sm uppercase tracking-wider">
+            Home &gt; <a href="{% url 'core:products' %}" class="hover:underline">Products</a>
+            {% if active_category %} &gt; {{ active_category.name }}{% endif %}
+        </div>
+        <h1 class="font-display-lg text-display-lg md:font-display-lg md:text-display-lg">
+            {% if active_category %}{{ active_category.name }}{% else %}Product Catalog{% endif %}
+        </h1>
+        <div class="w-16 h-1 bg-[#d4942a] mt-md"></div>
+    </div>
+</section>
+
+<!-- Main Catalog Container -->
+<section class="py-xl px-gutter max-w-container-max mx-auto">
+    <!-- Toolbar Row: Search, Category Filter, and Sort -->
+    <form id="catalog-form" method="get" class="flex flex-col lg:flex-row gap-6 justify-between items-start lg:items-center mb-12 bg-surface-white p-6 rounded-lg shadow-sm border border-border-subtle">
+        
+        <!-- Search bar -->
+        <div class="relative w-full lg:w-96">
+            <span class="material-symbols-outlined absolute left-3 top-1/2 transform -translate-y-1/2 text-on-surface-variant">search</span>
+            <input type="text" name="q" value="{{ search_query|default:'' }}" placeholder="Search products by name or SKU..." 
+                   class="w-full pl-10 pr-4 py-2 border border-border-subtle rounded focus:outline-none focus:border-secondary focus:ring-1 focus:ring-secondary"/>
+        </div>
+
+        <!-- Hidden input for category so we preserve it when submitting search/sort -->
+        {% if category_slug %}
+            <input type="hidden" name="category" value="{{ category_slug }}"/>
+        {% endif %}
+
+        <!-- Right Side: Category pills + Sort -->
+        <div class="flex flex-wrap items-center gap-4 w-full lg:w-auto">
+            <!-- Sort dropdown -->
+            <div class="flex items-center gap-2">
+                <label for="sort-select" class="font-label-md text-label-md text-on-surface-variant whitespace-nowrap">Sort by:</label>
+                <select id="sort-select" name="sort" onchange="this.form.submit()" 
+                        class="border border-border-subtle rounded px-3 py-1.5 focus:outline-none focus:border-secondary text-body-sm font-medium">
+                    <option value="name_asc" {% if sort_by == 'name_asc' %}selected{% endif %}>Name (A-Z)</option>
+                    <option value="name_desc" {% if sort_by == 'name_desc' %}selected{% endif %}>Name (Z-A)</option>
+                    <option value="newest" {% if sort_by == 'newest' %}selected{% endif %}>Newest First</option>
+                </select>
+            </div>
+        </div>
+    </form>
+
+    <!-- Categories Filter Bar -->
+    <div class="flex flex-wrap gap-3 mb-10">
+        <a href="?{% if search_query %}q={{ search_query }}&{% endif %}{% if sort_by %}sort={{ sort_by }}{% endif %}" 
+           class="px-4 py-2 rounded-full font-label-md text-label-md transition-all border 
+                  {% if not category_slug %}bg-secondary text-surface-white border-secondary shadow{% else %}bg-surface-white text-on-surface-variant border-border-subtle hover:bg-surface-alt{% endif %}">
+            All Categories
+        </a>
+        {% for cat in categories %}
+            <a href="?category={{ cat.slug }}{% if search_query %}&q={{ search_query }}{% endif %}{% if sort_by %}&sort={{ sort_by }}{% endif %}" 
+               class="px-4 py-2 rounded-full font-label-md text-label-md transition-all border 
+                      {% if category_slug == cat.slug %}bg-secondary text-surface-white border-secondary shadow{% else %}bg-surface-white text-on-surface-variant border-border-subtle hover:bg-surface-alt{% endif %}">
+                {{ cat.name }}
+            </a>
+        {% endfor %}
+    </div>
+
+    <!-- Product Grid -->
+    {% if page_obj %}
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-gutter">
+            {% for product in page_obj %}
+                <div class="bg-surface-white rounded-lg overflow-hidden border border-border-subtle flex flex-col hover-lift product-card-shadow transition-all duration-300">
+                    <!-- Thumbnail container with fixed 4:3 aspect ratio -->
+                    <div class="relative aspect-[4/3] bg-surface-container-high overflow-hidden">
+                        <img src="{% if product.thumbnail %}{{ product.thumbnail.url }}{% else %}https://images.unsplash.com/photo-1504307651254-35680f356dfd?auto=format&fit=crop&w=600&q=80{% endif %}" 
+                             alt="{{ product.name }}" 
+                             class="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
+                             loading="lazy"/>
+                        
+                        <!-- Availability Badge -->
+                        <div class="absolute top-3 right-3">
+                            {% if product.availability == 'IN_STOCK' %}
+                                <span class="bg-emerald-600 text-white font-label-md text-[11px] px-2.5 py-0.5 rounded-full uppercase tracking-wider shadow-sm">In Stock</span>
+                            {% elif product.availability == 'ON_REQUEST' %}
+                                <span class="bg-amber-600 text-white font-label-md text-[11px] px-2.5 py-0.5 rounded-full uppercase tracking-wider shadow-sm">On Request</span>
+                            {% else %}
+                                <span class="bg-gray-500 text-white font-label-md text-[11px] px-2.5 py-0.5 rounded-full uppercase tracking-wider shadow-sm">Coming Soon</span>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Category Badge -->
+                        <div class="absolute bottom-3 left-3 bg-primary/75 text-surface-white backdrop-blur-sm px-2.5 py-0.5 rounded text-[11px] font-bold uppercase tracking-wider">
+                            {{ product.category.name }}
+                        </div>
+                    </div>
+
+                    <!-- Card Body -->
+                    <div class="p-5 flex-grow flex flex-col">
+                        {% if product.sku %}
+                            <span class="text-[11px] text-on-surface-variant font-mono uppercase tracking-wider mb-1 block">{{ product.sku }}</span>
+                        {% endif %}
+                        <h3 class="font-headline-sm text-headline-sm text-primary mb-2 line-clamp-2 min-h-[2.8rem]">{{ product.name }}</h3>
+                        <p class="font-body-sm text-body-sm text-on-surface-variant mb-4 line-clamp-2">{{ product.short_description }}</p>
+                        
+                        <div class="mt-auto pt-4 border-t border-border-subtle/50 flex justify-end">
+                            <!-- View Details Link -->
+                            <a href="/products/{{ product.slug }}/" class="btn-secondary px-4 py-2 rounded text-label-md font-bold text-sm inline-flex items-center gap-1">
+                                View Details
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+        <!-- Pagination Controls -->
+        {% if page_obj.has_other_pages %}
+            <div class="flex justify-center items-center gap-2 mt-12 pt-6 border-t border-border-subtle/35">
+                {% if page_obj.has_previous %}
+                    <a href="?page={{ page_obj.previous_page_number }}{% if category_slug %}&category={{ category_slug }}{% endif %}{% if search_query %}&q={{ search_query }}{% endif %}{% if sort_by %}&sort={{ sort_by }}{% endif %}" 
+                       class="w-10 h-10 rounded border border-border-subtle flex items-center justify-center text-primary hover:bg-surface-alt transition-colors">
+                        <span class="material-symbols-outlined">chevron_left</span>
+                    </a>
+                {% endif %}
+
+                {% for num in page_obj.paginator.page_range %}
+                    {% if page_obj.number == num %}
+                        <span class="w-10 h-10 rounded bg-secondary text-surface-white flex items-center justify-center font-bold">{{ num }}</span>
+                    {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                        <a href="?page={{ num }}{% if category_slug %}&category={{ category_slug }}{% endif %}{% if search_query %}&q={{ search_query }}{% endif %}{% if sort_by %}&sort={{ sort_by }}{% endif %}" 
+                           class="w-10 h-10 rounded border border-border-subtle flex items-center justify-center text-primary hover:bg-surface-alt transition-colors">{{ num }}</a>
+                    {% endif %}
+                {% endfor %}
+
+                {% if page_obj.has_next %}
+                    <a href="?page={{ page_obj.next_page_number }}{% if category_slug %}&category={{ category_slug }}{% endif %}{% if search_query %}&q={{ search_query }}{% endif %}{% if sort_by %}&sort={{ sort_by }}{% endif %}" 
+                       class="w-10 h-10 rounded border border-border-subtle flex items-center justify-center text-primary hover:bg-surface-alt transition-colors">
+                        <span class="material-symbols-outlined">chevron_right</span>
+                    </a>
+                {% endif %}
+            </div>
+        {% endif %}
+
+    {% else %}
+        <!-- Empty State -->
+        <div class="text-center py-20 bg-surface-white rounded-lg border border-border-subtle p-8 shadow-sm">
+            <span class="material-symbols-outlined text-[64px] text-on-surface-variant opacity-40 mb-4">inventory_2</span>
+            <h3 class="font-headline-md text-headline-md text-primary mb-2">No Products Found</h3>
+            <p class="font-body-md text-body-md text-on-surface-variant max-w-md mx-auto mb-6">
+                We couldn't find any products matching your search or filter criteria. Try resetting the filters or checking your spelling.
+            </p>
+            <a href="?" class="btn-primary px-6 py-2.5 rounded text-label-lg font-bold inline-block shadow">
+                Clear Filters & Search
+            </a>
+        </div>
+    {% endif %}
+</section>
+
+<!-- Search Debounce JS -->
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const searchInput = document.querySelector('input[name="q"]');
+        const form = document.getElementById('catalog-form');
+        
+        if (searchInput && form) {
+            let timeout = null;
+            searchInput.addEventListener('input', () => {
+                clearTimeout(timeout);
+                timeout = setTimeout(() => {
+                    form.submit();
+                }, 400); // 400ms debounce
+            });
+        }
+    });
+</script>
+{% endblock %}
