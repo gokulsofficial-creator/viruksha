@@ -18,31 +18,31 @@ class StatisticAdmin(admin.ModelAdmin):
 
 @admin.register(ServiceCategory)
 class ServiceCategoryAdmin(admin.ModelAdmin):
-    list_display = ('name', 'slug', 'sort_order')
-    prepopulated_fields = {'slug': ('name',)}
+    list_display = ('name', 'sort_order')
     list_editable = ('sort_order',)
+    exclude = ('slug',)
 
 @admin.register(Service)
 class ServiceAdmin(admin.ModelAdmin):
     list_display = ('title', 'category', 'is_featured', 'sort_order', 'created_at')
     list_filter = ('category', 'is_featured')
     search_fields = ('title', 'short_description')
-    prepopulated_fields = {'slug': ('title',)}
     list_editable = ('is_featured', 'sort_order')
+    exclude = ('slug',)
 
 @admin.register(Material)
 class MaterialAdmin(admin.ModelAdmin):
     list_display = ('name', 'category', 'linked_product', 'is_featured', 'sort_order', 'created_at')
     list_filter = ('category', 'is_featured')
     search_fields = ('name', 'category', 'description')
-    prepopulated_fields = {'slug': ('name',)}
     list_editable = ('linked_product', 'is_featured', 'sort_order')
+    exclude = ('slug',)
 
 @admin.register(ProductCategory)
 class ProductCategoryAdmin(admin.ModelAdmin):
-    list_display = ('name', 'slug', 'sort_order')
-    prepopulated_fields = {'slug': ('name',)}
+    list_display = ('name', 'sort_order')
     list_editable = ('sort_order',)
+    exclude = ('slug',)
 
 class ProductImageInline(admin.TabularInline):
     model = ProductImage
@@ -53,9 +53,9 @@ class ProductAdmin(admin.ModelAdmin):
     list_display = ('name', 'category', 'sku', 'availability', 'is_featured', 'is_active', 'sort_order')
     list_filter = ('category', 'availability', 'is_featured', 'is_active')
     search_fields = ('name', 'sku', 'short_description')
-    prepopulated_fields = {'slug': ('name',)}
     list_editable = ('availability', 'is_featured', 'is_active', 'sort_order')
     inlines = [ProductImageInline]
+    exclude = ('slug',)
 
 class ProjectImageInline(admin.TabularInline):
     model = ProjectImage
@@ -66,9 +66,9 @@ class ProjectAdmin(admin.ModelAdmin):
     list_display = ('title', 'category', 'location', 'completion_date', 'is_featured', 'sort_order')
     list_filter = ('category', 'is_featured')
     search_fields = ('title', 'location', 'client_name')
-    prepopulated_fields = {'slug': ('title',)}
     list_editable = ('is_featured', 'sort_order')
     inlines = [ProjectImageInline]
+    exclude = ('slug',)
 
 @admin.register(Enquiry)
 class EnquiryAdmin(admin.ModelAdmin):

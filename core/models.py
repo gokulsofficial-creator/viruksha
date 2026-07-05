@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils.text import slugify
 
 class CompanyInfo(models.Model):
     company_name = models.CharField(max_length=200, default="Viruksha Enterprises")
@@ -49,6 +50,11 @@ class ServiceCategory(models.Model):
     def __str__(self):
         return self.name
 
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.name)
+        super().save(*args, **kwargs)
+
 class Service(models.Model):
     title = models.CharField(max_length=200)
     category = models.ForeignKey(ServiceCategory, on_delete=models.CASCADE, related_name='services')
@@ -67,6 +73,11 @@ class Service(models.Model):
     def __str__(self):
         return self.title
 
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.title)
+        super().save(*args, **kwargs)
+
 class Material(models.Model):
     name = models.CharField(max_length=200)
     slug = models.SlugField(unique=True)
@@ -84,6 +95,11 @@ class Material(models.Model):
     def __str__(self):
         return self.name
 
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.name)
+        super().save(*args, **kwargs)
+
 class ProductCategory(models.Model):
     name = models.CharField(max_length=200)
     slug = models.SlugField(unique=True)
@@ -98,6 +114,11 @@ class ProductCategory(models.Model):
 
     def __str__(self):
         return self.name
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.name)
+        super().save(*args, **kwargs)
 
 class Product(models.Model):
     AVAILABILITY_CHOICES = [
@@ -126,6 +147,11 @@ class Product(models.Model):
 
     def __str__(self):
         return self.name
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.name)
+        super().save(*args, **kwargs)
 
 class ProductImage(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='gallery_images')
@@ -166,6 +192,11 @@ class Project(models.Model):
 
     def __str__(self):
         return self.title
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.title)
+        super().save(*args, **kwargs)
 
 class ProjectImage(models.Model):
     project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name='gallery_images')
