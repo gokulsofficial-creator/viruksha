@@ -21,6 +21,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 import os
+from urllib.parse import urlparse
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-x7myiu@5q-x-++!o48ox9+wbvf@^5n173jep8s)4%#3)9x3lvh')
@@ -29,8 +30,13 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-x7myiu@5q-x-++!o48ox9
 # Defaults to True for local development, but automatically defaults to False if running on Render.
 DEBUG = os.environ.get('DEBUG', 'False' if os.environ.get('RENDER') else 'True').lower() in ('true', '1', 't')
 
-
-ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '*').split(',')
+# Secure ALLOWED_HOSTS configuration
+ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
+RENDER_EXTERNAL_URL = os.environ.get('RENDER_EXTERNAL_URL')
+if RENDER_EXTERNAL_URL:
+    hostname = urlparse(RENDER_EXTERNAL_URL).hostname
+    if hostname and hostname not in ALLOWED_HOSTS:
+        ALLOWED_HOSTS.append(hostname)
 
 # Trusted origins for CSRF forms (Render domain support)
 CSRF_TRUSTED_ORIGINS = [
@@ -38,8 +44,22 @@ CSRF_TRUSTED_ORIGINS = [
     'http://localhost',
     'http://127.0.0.1',
 ]
-if os.environ.get('RENDER_EXTERNAL_URL'):
-    CSRF_TRUSTED_ORIGINS.append(os.environ.get('RENDER_EXTERNAL_URL'))
+if RENDER_EXTERNAL_URL:
+    CSRF_TRUSTED_ORIGINS.append(RENDER_EXTERNAL_URL)
+
+# SSL Proxy Header Detection (Critical for Render/Heroku SSL redirect resolution)
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+# Production security headers
+if not DEBUG:
+    SECURE_SSL_REDIRECT = True
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+    SECURE_HSTS_SECONDS = 31536000  # 1 year
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+    SECURE_HSTS_PRELOAD = True
+    SECURE_CONTENT_TYPE_NOSNIFF = True
+
 
 
 
