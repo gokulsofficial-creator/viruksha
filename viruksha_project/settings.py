@@ -166,7 +166,10 @@ STATICFILES_DIRS = [
 ]
 
 MEDIA_URL = 'media/'
-MEDIA_ROOT = BASE_DIR / 'media'
+if RENDER_DATA_DIR:
+    MEDIA_ROOT = os.path.join(RENDER_DATA_DIR, 'media')
+else:
+    MEDIA_ROOT = BASE_DIR / 'media'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
